@@ -31,44 +31,6 @@ This list will keep expanding as the repo grows — check back for updates rathe
 
 ---
 
-## Architecture
-
-```mermaid
-graph TD
-    ROOT["PythonBTA/"]
-
-    ROOT --> COND["Conditionals/ ✅"]
-    ROOT --> LOOP["Loops/ ✅"]
-    ROOT --> FUNC["Function and Variables/ ✅"]
-    ROOT --> EXC["Exceptions/ ✅"]
-    ROOT --> LIB["Libraries/ ✅"]
-    ROOT --> OOP["OOP/ 🔲 planned"]
-    ROOT --> FILEIO["File I-O and Data/ 🔲 planned"]
-    ROOT --> API["APIs and Web/ 🔲 planned"]
-    ROOT --> DSA["DSA/ 🔲 planned"]
-    ROOT --> AI["CS50 AI/ 🔲 planned"]
-    ROOT --> LLM["LLMs/ 🔲 planned"]
-    ROOT --> RAG["RAG System/ 🎯 end goal"]
-
-    COND --> LOOP --> FUNC --> EXC --> LIB --> OOP --> FILEIO --> API --> DSA --> AI --> LLM --> RAG
-
-    style COND fill:#2d6a4f,color:#fff
-    style LOOP fill:#2d6a4f,color:#fff
-    style FUNC fill:#2d6a4f,color:#fff
-    style EXC fill:#2d6a4f,color:#fff
-    style LIB fill:#2d6a4f,color:#fff
-    style OOP fill:#495057,color:#fff
-    style FILEIO fill:#495057,color:#fff
-    style API fill:#495057,color:#fff
-    style DSA fill:#495057,color:#fff
-    style AI fill:#495057,color:#fff
-    style LLM fill:#495057,color:#fff
-    style RAG fill:#9d4edd,color:#fff
-```
-
-Green = completed, grey = planned, purple = the end goal. The diagram doubles as the folder tree and the learning path — each box down the chain is a prerequisite for the one after it.
-
----
 
 ## Repository Structure
 
