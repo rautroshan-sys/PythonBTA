@@ -102,7 +102,6 @@ No special setup is required for the basics; folders involving external librarie
 
 19-year-old CS student learning Python from the ground up, with the long-term goal of working in AI/LLM engineering. This repo is where the fundamentals get built — properly, not just copy-pasted.
 
-*(Links to LinkedIn/portfolio coming soon.)*
 
 ---
 
