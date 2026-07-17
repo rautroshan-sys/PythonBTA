@@ -1,211 +1,314 @@
-# CS50P Week 5 — Unit Testing with `pytest`
+# CS50P Week 5 — Unit Tests (pytest)
 
-A practical, no-fluff reference for the core `pytest` concepts covered in CS50P Week 5. Written for anyone learning Python testing for the first time, using CS50P-style examples.
+A beginner-friendly walkthrough of **exactly** what CS50P Week 5 teaches — nothing more, nothing less. If you've never tested code before, this is written for you.
 
 ---
 
 ## Table of Contents
 
-- [Why Testing?](#why-testing)
-- [pytest vs assert-only scripts](#pytest-vs-assert-only-scripts)
-- [Installation](#installation)
-- [Test Discovery — Naming Rules](#test-discovery--naming-rules)
-- [Writing Your First Test](#writing-your-first-test)
-- [Testing for Exceptions](#testing-for-exceptions)
-- [Multiple Test Functions per Behavior](#multiple-test-functions-per-behavior)
-- [Project Structure](#project-structure)
-- [Running Tests](#running-tests)
-- [Common Pitfalls](#common-pitfalls)
-- [Quick Reference](#quick-reference)
+1. [Why bother testing at all?](#1-why-bother-testing-at-all)
+2. [The old way: `print` statements](#2-the-old-way-print-statements)
+3. [Writing a separate test function](#3-writing-a-separate-test-function)
+4. [`assert` — telling Python "this must be true"](#4-assert--telling-python-this-must-be-true)
+5. [The problem with `assert` alone](#5-the-problem-with-assert-alone)
+6. [Meet `pytest`](#6-meet-pytest)
+7. [Splitting one test into many small tests](#7-splitting-one-test-into-many-small-tests)
+8. [Testing for errors with `pytest.raises`](#8-testing-for-errors-with-pytestraises)
+9. [Important: your function must `return`, not `print`](#9-important-your-function-must-return-not-print)
+10. [Running a whole folder of tests](#10-running-a-whole-folder-of-tests)
+11. [Recap](#11-recap)
 
 ---
 
-## Why Testing?
+## 1. Why bother testing at all?
 
-Manually running a script and eyeballing the output doesn't scale. As functions grow, you need a fast, repeatable way to confirm:
+So far, you've probably tested your code by running it and typing in numbers to see if the output "looks right." That's slow, and you'll forget to check weird cases (negative numbers, zero, wrong types).
 
-- Correct inputs produce correct outputs
-- Edge cases (empty strings, negative numbers, `None`) are handled
-- Invalid inputs raise the right errors instead of crashing silently
-
-`pytest` automates this. Write the expected behavior once, run it forever.
+**The idea of this week:** write code that checks your code for you, automatically, every time.
 
 ---
 
-## pytest vs assert-only scripts
+## 2. The old way: `print` statements
 
-You *can* test with plain `assert` statements in a `if __name__ == "__main__":` block, but `pytest`:
+Say you have this file, `calculator.py`:
 
-- Automatically finds and runs every test function across your project
-- Reports **which specific test failed** and why (not just "AssertionError" with no context)
-- Doesn't stop at the first failure — it runs everything and gives you a full report
-- Is the industry-standard tool, not a CS50-only convention
+```python
+def main():
+    x = int(input("What's x? "))
+    print("x squared is", square(x))
+
+
+def square(n):
+    return n * n
+
+
+if __name__ == "__main__":
+    main()
+```
+
+To test `square`, you'd normally just run the program and type in `2`, see if it says `4`, then run it again for `3`, and so on. That works, but it doesn't scale, and it's easy to skip a case.
 
 ---
 
-## Installation
+## 3. Writing a separate test function
+
+CS50P's convention: create a **new file** named `test_calculator.py` (the `test_` prefix matters — more on that later). Inside it, import the function you want to test and write a function that checks it:
+
+```python
+from calculator import square
+
+
+def main():
+    test_square()
+
+
+def test_square():
+    if square(2) != 4:
+        print("2 squared was not 4")
+    if square(3) != 9:
+        print("3 squared was not 9")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Run it with `python test_calculator.py`. If nothing prints, either your code is correct — or your test just didn't happen to catch a bug. This `if ... print(...)` pattern is clunky, though.
+
+---
+
+## 4. `assert` — telling Python "this must be true"
+
+Python has a built-in keyword, `assert`, that lets you state a fact you expect to be true. If it's **not** true, Python raises an `AssertionError` and stops.
+
+```python
+from calculator import square
+
+
+def main():
+    test_square()
+
+
+def test_square():
+    assert square(2) == 4
+    assert square(3) == 9
+
+
+if __name__ == "__main__":
+    main()
+```
+
+This does the same job as the `if` version above, but in far fewer lines. If `square(2)` doesn't equal `4`, Python will crash right there with an `AssertionError`, telling you something is wrong.
+
+---
+
+## 5. The problem with `assert` alone
+
+If you want a friendlier message instead of a raw crash, you could wrap each `assert` in a `try/except`:
+
+```python
+def test_square():
+    try:
+        assert square(2) == 4
+    except AssertionError:
+        print("2 squared is not 4")
+    try:
+        assert square(3) == 9
+    except AssertionError:
+        print("3 squared is not 9")
+    try:
+        assert square(-2) == 4
+    except AssertionError:
+        print("-2 squared is not 4")
+```
+
+It works, but look how much code you now need just to test a handful of cases. **This is the exact problem `pytest` was built to solve.**
+
+---
+
+## 6. Meet `pytest`
+
+`pytest` is a separate tool (not built into Python) that runs your `assert` statements for you and gives you a clean report of what passed and what failed.
+
+**Install it:**
 
 ```bash
 pip install pytest
 ```
 
-Verify it installed correctly:
+Now simplify your test file back down to plain `assert` lines — no `try/except`, no `if`, no `main()` needed:
+
+```python
+from calculator import square
+
+
+def test_square():
+    assert square(2) == 4
+    assert square(3) == 9
+    assert square(-2) == 4
+    assert square(-3) == 9
+    assert square(0) == 0
+```
+
+Run it from the terminal — not with `python`, but with:
 
 ```bash
-pytest --version
+pytest test_calculator.py
 ```
 
----
+- If everything passes, you'll see a green dot / "passed" message.
+- If something fails, you'll see a red `F`, plus an `E` line explaining exactly which `assert` failed and what value it got instead.
 
-## Test Discovery — Naming Rules
-
-`pytest` finds tests automatically, but **only if you follow its naming conventions**:
-
-| Item | Rule |
-|---|---|
-| Test file | Must start with `test_` (e.g. `test_project.py`) |
-| Test function | Must start with `test_` (e.g. `def test_add():`) |
-| Test class (optional) | Must start with `Test` |
-
-> If your file or function name doesn't match this pattern, `pytest` will silently skip it. This is the #1 reason "my tests aren't running."
-
-**Convention:** if your project file is `project.py`, your test file is `test_project.py`, in the same directory.
+> **Naming rule:** `pytest` only looks inside files that start with `test_` and functions that start with `test_`. Name things wrong, and `pytest` will find nothing to run — with no error to warn you.
 
 ---
 
-## Writing Your First Test
+## 7. Splitting one test into many small tests
 
-Suppose you have this function in `working_with_password.py`:
+Here's a subtle catch: `pytest` **stops checking a function's remaining `assert` lines the moment one of them fails.** So if `test_square` has 5 `assert` lines and the 2nd one fails, you won't find out whether lines 3, 4, and 5 also would have failed.
+
+**Fix:** split your one big test function into several smaller ones. `pytest` runs *every* test function it finds, even if one of them fails:
 
 ```python
-def hash_password(password):
-    return password[::-1] + "!"
+from calculator import square
+
+
+def test_positive():
+    assert square(2) == 4
+    assert square(3) == 9
+
+
+def test_negative():
+    assert square(-2) == 4
+    assert square(-3) == 9
+
+
+def test_zero():
+    assert square(0) == 0
 ```
 
-Your test file, `test_working_with_password.py`:
-
-```python
-from working_with_password import hash_password
-
-
-def test_hash_password():
-    assert hash_password("hello") == "olleh!"
-    assert hash_password("") == "!"
-    assert hash_password("cat") == "tac!"
-```
-
-Each `assert` checks one expected input → output pair. If any `assert` fails, `pytest` reports **that exact line** — not just "something broke."
+Now if `test_positive` fails, `test_negative` and `test_zero` still run — giving you the full picture of what's broken, not just the first thing.
 
 ---
 
-## Testing for Exceptions
+## 8. Testing for errors with `pytest.raises`
 
-CS50P Week 5 emphasizes this pattern heavily: confirming a function raises the correct error for bad input.
+Some functions are *supposed* to raise an error when given bad input. You need to test that too. `pytest` gives you `pytest.raises` for exactly this:
 
 ```python
 import pytest
-from working_with_password import hash_password
+
+from calculator import square
 
 
-def test_hash_password_type_error():
+def test_positive():
+    assert square(2) == 4
+    assert square(3) == 9
+
+
+def test_negative():
+    assert square(-2) == 4
+    assert square(-3) == 9
+
+
+def test_zero():
+    assert square(0) == 0
+
+
+def test_str():
     with pytest.raises(TypeError):
-        hash_password(123)
-    with pytest.raises(TypeError):
-        hash_password(None)
+        square("cat")
 ```
 
-**How it works:**
-- `pytest.raises(ExceptionType)` is a context manager.
-- The code inside the `with` block is expected to raise `ExceptionType`.
-- If it does → the test passes.
-- If it doesn't (or raises a *different* exception) → the test fails.
-
-This is different from a regular `assert` because you're not checking a return value — you're checking *behavior under failure*.
+Read `with pytest.raises(TypeError):` as: *"I expect the line(s) inside this block to raise a `TypeError`. If they don't, fail this test."* This confirms your code fails **safely and predictably**, instead of crashing in some unexpected way.
 
 ---
 
-## Multiple Test Functions per Behavior
+## 9. Important: your function must `return`, not `print`
 
-Don't cram everything into one giant `test_` function. Split by behavior — it makes failures easier to diagnose:
+This trips people up. Say you have `hello.py`:
 
 ```python
-def test_valid_password():
-    assert hash_password("abc") == "cba!"
-
-def test_empty_password():
-    assert hash_password("") == "!"
-
-def test_invalid_type():
-    with pytest.raises(TypeError):
-        hash_password(42)
+def hello(to="world"):
+    print("hello,", to)
 ```
 
-If `test_invalid_type` fails, you instantly know the *type-checking* logic is broken — not the reversal logic.
+You **cannot** test this properly:
+
+```python
+from hello import hello
+
+def test_hello():
+    assert hello("David") == "hello, David"   # ❌ this will fail
+```
+
+Why? Because `hello()` prints to the screen and returns `None`. There's nothing for `assert` to compare. The fix is to make the function **return** a value instead of printing it:
+
+```python
+def hello(to="world"):
+    return f"hello, {to}"
+```
+
+Now testing works correctly:
+
+```python
+from hello import hello
+
+
+def test_default():
+    assert hello() == "hello, world"
+
+
+def test_argument():
+    assert hello("David") == "hello, David"
+```
+
+**Takeaway:** if you want to unit test a function, that function needs to `return` its result — not just `print` it.
 
 ---
 
-## Project Structure
+## 10. Running a whole folder of tests
 
-A typical CS50P Week 5 project looks like this:
+Once you have several test files, you can run them all at once by putting them in a folder.
+
+1. Create a folder: `mkdir test`
+2. Create a test file inside it: `code test/test_hello.py`
+3. Add an **empty** special file so `pytest` recognizes the folder as testable: `code test/__init__.py`
+
+Your structure now looks like:
 
 ```
 project/
-├── project.py          # main program with 3+ functions
-├── test_project.py      # tests for each function
-└── requirements.txt      # optional, lists dependencies (e.g. pytest)
+├── hello.py
+└── test/
+    ├── __init__.py
+    └── test_hello.py
 ```
 
-CS50P's `project.py` requirement: at least 3 custom functions besides `main()`, each with a corresponding test function in `test_project.py`.
-
----
-
-## Running Tests
+Now run everything in that folder with one command:
 
 ```bash
-# Run all tests in the current directory
-pytest
-
-# Run a specific file
-pytest test_project.py
-
-# Verbose output (shows each test name + pass/fail)
-pytest -v
-
-# Stop at the first failure
-pytest -x
-
-# Show print() output even on passing tests
-pytest -s
+pytest test
 ```
 
-**Reading the output:**
-- `.` = one passing test
-- `F` = one failing test
-- A summary at the bottom shows exactly which assertion failed and the expected vs. actual value
+Without the `__init__.py` file, `pytest` won't treat the folder as a proper test package.
 
 ---
 
-## Common Pitfalls
+## 11. Recap
 
-- **Forgetting the `test_` prefix** on the file or function — `pytest` finds nothing, reports "no tests ran," and gives no error to explain why.
-- **Importing the wrong thing** — if `project.py` defines `def add(a, b):`, your test file needs `from project import add`, not `import project` followed by calling `add()` directly.
-- **Testing only the happy path** — CS50P graders (and real-world reviewers) specifically check for edge cases: empty input, wrong type, negative numbers, boundary values.
-- **One giant assert-fest in a single function** — makes it harder to tell *which* case broke when the test fails.
-- **Not testing exceptions at all** — if your function is supposed to raise `ValueError` on bad input, that needs its own explicit test with `pytest.raises`.
+That's the entire scope of CS50P Week 5:
 
----
-
-## Quick Reference
-
-| Task | Syntax |
+| Concept | What it does |
 |---|---|
-| Basic assertion | `assert func(x) == expected` |
-| Test file name | `test_<filename>.py` |
-| Test function name | `def test_<name>():` |
-| Check for exception | `with pytest.raises(ExceptionType):` |
-| Install pytest | `pip install pytest` |
-| Run all tests | `pytest` |
-| Verbose run | `pytest -v` |
+| `assert` | States a fact that must be true, or raises `AssertionError` |
+| `pytest` | Third-party tool that runs your `assert` statements and reports pass/fail clearly |
+| Splitting tests into separate `test_` functions | Ensures one failure doesn't hide other failures |
+| `pytest.raises(SomeError)` | Confirms your code raises the *correct* error on bad input |
+| `return` vs `print` | Functions must `return` a value to be testable with `assert` |
+| `test/` folder + `__init__.py` | Lets you run every test file at once with `pytest test` |
+
+Nothing here uses fixtures, mocking, or `parametrize` — those are **not** part of CS50P Week 5, and you don't need them yet.
 
 ---
 
