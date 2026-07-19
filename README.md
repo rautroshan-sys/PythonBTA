@@ -19,10 +19,9 @@ Most learning code ends up buried in random folders, half-finished repls, or del
 - [x] **Exceptions** — error handling, custom exceptions, EAFP
 - [x] **Libraries** — working with external packages, command-line arguments
 - [ ] **Object-Oriented Programming**
-- [ ] **File I/O & Data Handling** (CSV, JSON, SQLite)
+- [x] **File I/O & Data Handling** (CSV, JSON, SQLite)
 - [ ] **APIs & Web Requests**
 - [ ] **Web Development** (Flask/FastAPI basics)
-- [ ] **Data Structures & Algorithms** (applied, not just theory)
 - [ ] **CS50 AI with Python** — search, knowledge, uncertainty, optimization, machine learning, neural networks, natural language
 - [ ] **Working with LLMs** (prompting, API calls, embeddings)
 - [ ] **Building a RAG System** (the current end goal)
