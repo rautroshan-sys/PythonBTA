@@ -18,7 +18,7 @@ Most learning code ends up buried in random folders, half-finished repls, or del
 - [x] **Basics** — variables, conditionals, loops, functions
 - [x] **Exceptions** — error handling, custom exceptions, EAFP
 - [x] **Libraries** — working with external packages, command-line arguments
-- [ ] **Object-Oriented Programming**
+- [x] **Object-Oriented Programming**
 - [x] **File I/O & Data Handling** (CSV, JSON, SQLite)
 - [X] **Flask, APIs & Web Requests**
 - [ ] **Web Development** (Flask/FastAPI basics)
