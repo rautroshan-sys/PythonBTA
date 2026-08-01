@@ -21,7 +21,7 @@ Most learning code ends up buried in random folders, half-finished repls, or del
 - [x] **Object-Oriented Programming**
 - [x] **File I/O & Data Handling** (CSV, JSON, SQLite)
 - [X] **Flask, APIs & Web Requests**
-- [ ] **Web Development** (Flask/FastAPI basics)
+- [x] **Web Development** (Flask/FastAPI basics)
 - [ ] **CS50 AI with Python** — search, knowledge, uncertainty, optimization, machine learning, neural networks, natural language
 - [ ] **Working with LLMs** (prompting, API calls, embeddings)
 - [ ] **Building a RAG System** (the current end goal)
