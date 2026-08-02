@@ -15,4 +15,4 @@ Playlist: https://www.youtube.com/playlist?list=PLQVvvaa0QuDcjD5BAw2DxE6OF2tius3
 | P.8 | Implementing Loss |
 | P.9 | Introducing Optimization |
 
-Each file: concept notes only (no code), medium detail, bullet-point key takeaways, plus a "gaps to watch for" section flagging common misunderstandings at that stage.
+Each file: concept notes and code, medium detail, bullet-point key takeaways, plus a "gaps to watch for" section flagging common misunderstandings at that stage.
