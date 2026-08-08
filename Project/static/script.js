@@ -126,3 +126,25 @@ if (loginForm) {
     window.location.href = '/';
   });
 }
+
+async function submitAuthForm(formId, endpoint) {
+  const form = document.getElementById(formId);
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Something went wrong'); return; }
+    window.location.href = '/';
+  });
+}
+
+submitAuthForm('login-form', '/login');
+submitAuthForm('signup-form', '/signup');

@@ -18,8 +18,10 @@ db.init_app(app)
 UPLOAD_DIR = "static/uploads"
 
 
-@app.route("/signup", methods=["POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
+    if request.method == "GET":
+        return render_template("signup.html")
     data = request.json
     if User.query.filter_by(email=data["email"]).first():
         return jsonify({"error": "email already registered"}), 400
@@ -50,8 +52,6 @@ def logout():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    if "user_id" not in session:
-        return jsonify({"error": "not logged in"}), 401
     file = request.files["file"]
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     path = os.path.join(UPLOAD_DIR, secure_filename(file.filename))
@@ -61,7 +61,7 @@ def upload():
     if text.strip() == "UNREADABLE":
         return jsonify({"error": "file unreadable"}), 400
 
-    doc = Document(user_id=session["user_id"], filename=file.filename)
+    doc = Document(user_id=session.get("user_id"), filename=file.filename)
     db.session.add(doc)
     db.session.commit()
     store_chunks(doc.id, chunk_text(text))
@@ -70,17 +70,20 @@ def upload():
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    if "user_id" not in session:
-        return jsonify({"error": "not logged in"}), 401
-    question = request.json["question"]
-    chunks = top_chunks(question)
+    data = request.json
+    question, document_id = data["question"], data.get("document_id")
+    if not document_id:
+        return jsonify({"error": "document_id is required"}), 400
+
+    chunks = top_chunks(question, document_id)
     answer = generate_answer(question, chunks)
 
-    entry = ChatHistory(user_id=session["user_id"], question=question, answer=answer)
-    db.session.add(entry)
-    db.session.commit()
-    return jsonify({"answer": answer, "chat_id": entry.id})
+    if "user_id" in session:
+        entry = ChatHistory(user_id=session["user_id"], document_id=document_id, question=question, answer=answer)
+        db.session.add(entry)
+        db.session.commit()
 
+    return jsonify({"answer": answer})
 
 @app.route("/history")
 def history():
