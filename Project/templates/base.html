@@ -27,9 +27,23 @@
     </div>
   </header>
   
-  <main>
+  <div class="app-layout">
+  <main class="app-main">
     {% block content %}{% endblock %}
   </main>
+  <div class="chat-panel" id="chat-panel">
+    <div class="chat-panel-header">
+      <span>Ask about this document</span>
+      <button class="modal-close" id="chat-close">×</button>
+    </div>
+    <div id="chat-log"></div>
+    <div class="chat-panel-input">
+      <input type="text" id="question-input" class="field-input" placeholder="Ask a question...">
+      <button class="btn btn-primary" id="ask-btn">Ask</button>
+    </div>
+  </div>
+</div>
+<button class="chat-toggle-btn" id="chat-toggle" hidden>💬 Chat</button>
   
   <footer class="site-footer">
     <p>Extractly · text stays on your run, nothing is shared</p>

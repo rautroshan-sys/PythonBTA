@@ -52,6 +52,8 @@ h1, h2, .logo-text {
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .logo-mark {
@@ -94,6 +96,8 @@ h1, h2, .logo-text {
   border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .btn-ghost {
@@ -135,6 +139,18 @@ h1, h2, .logo-text {
   font-size: 14px;
   cursor: pointer;
   padding: 0;
+  text-decoration: none;
+}
+
+/* ============ APP LAYOUT (main content + docked chat panel) ============ */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 65px);
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
 }
 
 /* ============ HERO ============ */
@@ -272,6 +288,22 @@ h1, h2, .logo-text {
   margin: 0;
 }
 
+/* ============ RESULT SECTION ============ */
+.result-section {
+  max-width: 640px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+}
+
+.result-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
 /* ============ HISTORY PANEL ============ */
 .history-panel {
   max-width: 640px;
@@ -325,6 +357,30 @@ h1, h2, .logo-text {
   font-size: 12px;
 }
 
+/* ============ AUTH PAGES (login / signup) ============ */
+.auth-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  box-shadow: var(--shadow);
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin: 0 0 24px;
+}
+
 /* ============ FOOTER ============ */
 .site-footer {
   text-align: center;
@@ -334,7 +390,72 @@ h1, h2, .logo-text {
   border-top: 1px solid var(--line);
 }
 
-/* ============ MODAL ============ */
+/* ============ DOCKED CHAT PANEL ============ */
+.chat-toggle-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  z-index: 40;
+}
+
+.chat-toggle-btn:hover {
+  background: var(--accent-hover);
+}
+
+.chat-panel {
+  width: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+  flex-shrink: 0;
+}
+
+.chat-panel.open {
+  width: 380px;
+}
+
+.chat-panel-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#chat-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 340px;
+}
+
+.chat-panel-input {
+  padding: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 8px;
+  min-width: 340px;
+}
+
+.chat-panel-input .field-input { flex: 1; }
+
+/* ============ MODAL (auth popup, if still used anywhere) ============ */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -394,10 +515,6 @@ h1, h2, .logo-text {
   border-color: var(--accent);
 }
 
-#authForm .btn-primary {
-  margin-top: 22px;
-}
-
 .modal-switch {
   text-align: center;
   font-size: 13px;
@@ -405,66 +522,6 @@ h1, h2, .logo-text {
   margin: 18px 0 0;
 }
 
-.chat-toggle-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 30px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  z-index: 40;
-}
-
-.chat-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100vh;
-  width: 380px;
-  max-width: 90vw;
-  background: var(--surface);
-  border-left: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.25s ease;
-  z-index: 50;
-  box-shadow: -8px 0 24px rgba(0,0,0,0.08);
-}
-
-.chat-panel.open { transform: translateX(0); }
-
-.chat-panel-header {
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-}
-
-#chat-log {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.chat-panel-input {
-  padding: 14px;
-  border-top: 1px solid var(--line);
-  display: flex;
-  gap: 8px;
-}
-
-.chat-panel-input .field-input { flex: 1; }
 /* ============ FOCUS STATES ============ */
 button:focus-visible,
 input:focus-visible {
@@ -473,6 +530,18 @@ input:focus-visible {
 }
 
 /* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .chat-panel.open {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 90vw;
+    z-index: 50;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.08);
+  }
+}
+
 @media (max-width: 680px) {
   .method-grid { grid-template-columns: 1fr; }
   .hero h1 { font-size: 28px; }
