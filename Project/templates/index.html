@@ -38,7 +38,7 @@
       <div class="upload-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0-4 4m4-4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </div>
-      <p class="upload-title">Choose a method above to begin</p>
+      <p class="upload-title" id="upload-title">Choose a method above to begin</p>
       <p class="upload-sub">Drag a file here, or click to browse</p>
       <input type="file" id="file-input" name="file" hidden required>
     </div>
@@ -49,5 +49,11 @@
 <section class="result-section" id="result-section" hidden>
   <h2>Extracted Result</h2>
   <div class="result-box" id="result-box"></div>
+</section>
+
+<section class="upload-section" id="ask-section" hidden>
+  <input type="text" id="question-input" class="field-input" placeholder="Ask a question about this document">
+  <button type="button" class="btn btn-primary btn-wide" id="ask-btn" style="margin-top:10px">Ask</button>
+  <div id="answer-box" style="margin-top:20px"></div>
 </section>
 {% endblock %}

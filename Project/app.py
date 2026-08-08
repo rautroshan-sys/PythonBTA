@@ -107,7 +107,8 @@ def index():
 
 @app.context_processor
 def inject_logged_in():
-    return {"logged_in": "user_id" in session}
+    user = User.query.get(session["user_id"]) if "user_id" in session else None
+    return {"logged_in": user is not None, "current_user": user}
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
