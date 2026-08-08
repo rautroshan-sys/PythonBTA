@@ -1,14 +1,15 @@
-import google.generativeai as genai
+from google import genai
 from config import Config
 from db.database import db
 from db.models import Chunk
 
-genai.configure(api_key=Config.GEMINI_API_KEY)
+client = genai.Client(api_key=Config.GEMINI_API_KEY)
+EMBED_MODEL = "models/text-embedding-004"
 
 
 def embed_text(text):
-    result = genai.embed_content(model="models/text-embedding-004", content=text)
-    return result["embedding"]
+    result = client.models.embed_content(model=EMBED_MODEL, contents=text)
+    return result.embeddings[0].values
 
 
 def store_chunks(document_id, texts):
