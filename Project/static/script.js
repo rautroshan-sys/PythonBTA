@@ -68,64 +68,57 @@ extractForm.addEventListener('submit', async e => {
   extractBtn.disabled = true;
   extractBtn.textContent = 'Extracting...';
 
-  const res = await fetch('/upload', { method: 'POST', body: formData, credentials: 'include' });
-  const data = await res.json();
+  try {
+    const res = await fetch('/upload', { method: 'POST', body: formData, credentials: 'include' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
 
-  extractBtn.disabled = false;
-  extractBtn.textContent = 'Extract text';
-
-  if (!res.ok) {
-    alert(data.error || 'Upload failed');
-    return;
+    currentDocId = data.document_id;
+    resultSection.hidden = false;
+    resultBox.textContent = 'Uploaded — ask a question below.';
+    askSection.hidden = false;
+    askSection.scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    alert(err.message || 'Something went wrong — try again.');
+  } finally {
+    extractBtn.disabled = false;
+    extractBtn.textContent = 'Extract text';
   }
-
-  currentDocId = data.document_id;
-  resultSection.hidden = false;
-  resultBox.textContent = 'Uploaded — ask a question below.';
-  askSection.hidden = false;
-  askSection.scrollIntoView({ behavior: 'smooth' });
 });
+
+function appendMessage(role, text) {
+  const bubble = document.createElement('div');
+  bubble.style.cssText = role === 'user'
+    ? 'align-self:flex-end;background:var(--accent-soft);color:var(--ink);padding:10px 14px;border-radius:10px;max-width:80%'
+    : 'align-self:flex-start;background:var(--surface);border:1px solid var(--line);padding:10px 14px;border-radius:10px;max-width:80%';
+  bubble.textContent = text;
+  document.getElementById('chat-log').appendChild(bubble);
+  bubble.scrollIntoView({ behavior: 'smooth' });
+  return bubble;
+}
 
 document.getElementById('ask-btn').addEventListener('click', async () => {
-  const question = document.getElementById('question-input').value.trim();
+  const input = document.getElementById('question-input');
+  const question = input.value.trim();
   if (!question || !currentDocId) return;
 
-  const answerBox = document.getElementById('answer-box');
-  answerBox.textContent = 'Thinking...';
+  appendMessage('user', question);
+  input.value = '';
+  const thinking = appendMessage('assistant', 'Thinking...');
 
-  const res = await fetch('/ask', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ question, document_id: currentDocId })
-  });
-  const data = await res.json();
-
-  answerBox.textContent = res.ok ? data.answer : (data.error || 'Something went wrong');
-});
-
-const loginForm = document.getElementById('login-form');
-if (loginForm) {
-  loginForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    const res = await fetch('/login', {
+  try {
+    const res = await fetch('/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ question, document_id: currentDocId })
     });
     const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || 'Login failed');
-      return;
-    }
-    window.location.href = '/';
-  });
-}
+    thinking.textContent = res.ok ? data.answer : (data.error || 'Something went wrong');
+  } catch {
+    thinking.textContent = 'Something went wrong — try again.';
+  }
+});
 
 async function submitAuthForm(formId, endpoint) {
   const form = document.getElementById(formId);
@@ -134,15 +127,20 @@ async function submitAuthForm(formId, endpoint) {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (!res.ok) { alert(data.error || 'Something went wrong'); return; }
-    window.location.href = '/';
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong');
+      window.location.href = '/';
+    } catch (err) {
+      alert(err.message);
+    }
   });
 }
 
