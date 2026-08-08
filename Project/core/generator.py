@@ -1,3 +1,4 @@
+import time
 from google import genai
 from config import Config
 
@@ -11,13 +12,24 @@ ANSWER_PROMPT = (
 )
 
 
+def generate_content_with_retry(model, contents, retries=3):
+    for attempt in range(retries):
+        try:
+            return client.models.generate_content(model=model, contents=contents)
+        except Exception as e:
+            if "UNAVAILABLE" in str(e) and attempt < retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+            raise
+
+
 def call_gemini_vision(image, prompt):
-    response = client.models.generate_content(model=MODEL, contents=[prompt, image])
+    response = generate_content_with_retry(MODEL, [prompt, image])
     return response.text.strip()
 
 
 def generate_answer(question, chunks):
     context = "\n\n".join(c.text for c in chunks)
     prompt = ANSWER_PROMPT.format(context=context, question=question)
-    response = client.models.generate_content(model=MODEL, contents=prompt)
+    response = generate_content_with_retry(MODEL, prompt)
     return response.text.strip()
