@@ -1,0 +1,12 @@
+flask
+flask-sqlalchemy
+psycopg[binary]
+pgvector
+google-generativeai
+python-dotenv
+alembic
+pypdf
+pillow
+pytest
+pytest-mock
+gunicorn

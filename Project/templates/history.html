@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}History — Extractly{% endblock %}
+{% block content %}
+<section class="history-panel">
+  <div class="history-header">
+    <h2>Your past extractions</h2>
+  </div>
+  
+  <div class="history-list">
+    {% if entries %}
+      <ul class="history-items">
+        {% for entry in entries %}
+        <li class="history-card">
+          <div class="history-meta">
+            <span class="history-file">{{ entry.filename }}</span>
+            <span class="history-date">{{ entry.created_at }}</span>
+          </div>
+          <div class="history-text">
+            <pre>{{ entry.answer }}</pre>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="history-empty">Nothing extracted yet.</div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
