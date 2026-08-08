@@ -6,7 +6,6 @@ const fileInput = document.getElementById('file-input');
 const extractForm = document.getElementById('extract-form');
 const resultSection = document.getElementById('result-section');
 const resultBox = document.getElementById('result-box');
-const askSection = document.getElementById('ask-section');
 
 let selectedMethod = null;
 let selectedFile = null;
@@ -75,9 +74,12 @@ extractForm.addEventListener('submit', async e => {
 
     currentDocId = data.document_id;
     resultSection.hidden = false;
-    resultBox.textContent = 'Uploaded — ask a question below.';
-    askSection.hidden = false;
-    askSection.scrollIntoView({ behavior: 'smooth' });
+    resultBox.textContent = 'Uploaded — click Chat to ask questions.';
+
+    document.getElementById('chat-log').innerHTML = '';
+    appendMessage('assistant', data.text);
+    document.getElementById('chat-toggle').hidden = false;
+    document.getElementById('chat-panel').classList.add('open');
   } catch (err) {
     alert(err.message || 'Something went wrong — try again.');
   } finally {
@@ -86,11 +88,18 @@ extractForm.addEventListener('submit', async e => {
   }
 });
 
+document.getElementById('chat-toggle').addEventListener('click', () => {
+  document.getElementById('chat-panel').classList.toggle('open');
+});
+document.getElementById('chat-close').addEventListener('click', () => {
+  document.getElementById('chat-panel').classList.remove('open');
+});
+
 function appendMessage(role, text) {
   const bubble = document.createElement('div');
   bubble.style.cssText = role === 'user'
-    ? 'align-self:flex-end;background:var(--accent-soft);color:var(--ink);padding:10px 14px;border-radius:10px;max-width:80%'
-    : 'align-self:flex-start;background:var(--surface);border:1px solid var(--line);padding:10px 14px;border-radius:10px;max-width:80%';
+    ? 'align-self:flex-end;background:var(--accent-soft);color:var(--ink);padding:10px 14px;border-radius:10px;max-width:85%'
+    : 'align-self:flex-start;background:var(--paper);border:1px solid var(--line);padding:10px 14px;border-radius:10px;max-width:85%';
   bubble.textContent = text;
   document.getElementById('chat-log').appendChild(bubble);
   bubble.scrollIntoView({ behavior: 'smooth' });
@@ -120,6 +129,14 @@ document.getElementById('ask-btn').addEventListener('click', async () => {
   }
 });
 
+function showToast(text) {
+  const toast = document.createElement('div');
+  toast.textContent = text;
+  toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:8px;z-index:200;font-size:14px';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1200);
+}
+
 async function submitAuthForm(formId, endpoint) {
   const form = document.getElementById(formId);
   if (!form) return;
@@ -127,17 +144,21 @@ async function submitAuthForm(formId, endpoint) {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const nameField = document.getElementById('name');
+    const body = nameField ? { name: nameField.value, email, password } : { email, password };
 
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify(body)
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
-      window.location.href = '/';
+
+      showToast(endpoint === '/signup' ? 'Account created' : 'Logged in');
+      setTimeout(() => window.location.href = '/', 900);
     } catch (err) {
       alert(err.message);
     }

@@ -25,7 +25,7 @@ def signup():
     data = request.json
     if User.query.filter_by(email=data["email"]).first():
         return jsonify({"error": "email already registered"}), 400
-    user = User(email=data["email"], password_hash=generate_password_hash(data["password"]))
+    user = User(name=data.get("name"), email=data["email"], password_hash=generate_password_hash(data["password"]))
     db.session.add(user)
     db.session.commit()
     session["user_id"] = user.id
@@ -65,7 +65,7 @@ def upload():
     db.session.add(doc)
     db.session.commit()
     store_chunks(doc.id, chunk_text(text))
-    return jsonify({"status": "ok", "document_id": doc.id})
+    return jsonify({"status": "ok", "document_id": doc.id, "text": text})
 
 
 @app.route("/ask", methods=["POST"])

@@ -51,9 +51,17 @@
   <div class="result-box" id="result-box"></div>
 </section>
 
-<section class="upload-section" id="ask-section" hidden>
-  <div id="chat-log" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;max-height:400px;overflow-y:auto"></div>
-  <input type="text" id="question-input" class="field-input" placeholder="Ask a question about this document">
-  <button class="btn btn-primary btn-wide" id="ask-btn" style="margin-top:10px">Ask</button>
-</section>
+<button class="chat-toggle-btn" id="chat-toggle" hidden>💬 Chat</button>
+
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-panel-header">
+    <span>Ask about this document</span>
+    <button class="modal-close" id="chat-close">×</button>
+  </div>
+  <div id="chat-log"></div>
+  <div class="chat-panel-input">
+    <input type="text" id="question-input" class="field-input" placeholder="Ask a question...">
+    <button class="btn btn-primary" id="ask-btn">Ask</button>
+  </div>
+</div>
 {% endblock %}

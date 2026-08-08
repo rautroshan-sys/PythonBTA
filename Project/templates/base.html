@@ -18,7 +18,7 @@
       <div class="auth-controls">
         {% if logged_in %}
           <a href="/history" class="btn btn-ghost">My extractions</a>
-          <div class="account-pill"><span class="account-initial">{{ current_user.email[0] | upper }}</span></div>
+          <div class="account-pill"><span class="account-initial">{{ (current_user.name or current_user.email)[0] | upper }}</span></div>
         {% else %}
           <a href="/login" class="btn btn-ghost">Log in</a>
           <a href="/signup" class="btn btn-primary">Register</a>
