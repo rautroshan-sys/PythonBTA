@@ -26,29 +26,31 @@
       </div>
     </div>
   </header>
-  
+
   <div class="app-layout">
-  <main class="app-main">
-    {% block content %}{% endblock %}
-  </main>
-  <div class="chat-panel" id="chat-panel">
-    <div class="chat-panel-header">
-      <span>Ask about this document</span>
-      <button class="modal-close" id="chat-close">×</button>
-    </div>
-    <div id="chat-log"></div>
-    <div class="chat-panel-input">
-      <input type="text" id="question-input" class="field-input" placeholder="Ask a question...">
-      <button class="btn btn-primary" id="ask-btn">Ask</button>
+    <main class="app-main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <div class="chat-panel" id="chat-panel">
+      <div class="chat-panel-header">
+        <span id="chat-panel-title">Upload a document to start</span>
+        <button class="modal-close" id="chat-close">×</button>
+      </div>
+      <div id="chat-log"></div>
+      <div class="chat-panel-input">
+        <input type="text" id="question-input" class="field-input" placeholder="Ask a question...">
+        <button class="btn btn-primary" id="ask-btn">Ask</button>
+      </div>
     </div>
   </div>
-</div>
-<button class="chat-toggle-btn" id="chat-toggle" hidden>💬 Chat</button>
-  
+
+  <button class="chat-toggle-btn" id="chat-toggle">💬 Chat</button>
+
   <footer class="site-footer">
     <p>Extractly · text stays on your run, nothing is shared</p>
   </footer>
-  
+
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

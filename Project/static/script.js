@@ -6,6 +6,8 @@ const fileInput = document.getElementById('file-input');
 const extractForm = document.getElementById('extract-form');
 const resultSection = document.getElementById('result-section');
 const resultBox = document.getElementById('result-box');
+const chatPanel = document.getElementById('chat-panel');
+const chatPanelTitle = document.getElementById('chat-panel-title');
 
 let selectedMethod = null;
 let selectedFile = null;
@@ -74,12 +76,12 @@ extractForm.addEventListener('submit', async e => {
 
     currentDocId = data.document_id;
     resultSection.hidden = false;
-    resultBox.textContent = 'Uploaded — click Chat to ask questions.';
+    resultBox.textContent = 'Uploaded — ask questions about it in the chat panel.';
 
     document.getElementById('chat-log').innerHTML = '';
     appendMessage('assistant', data.text);
-    document.getElementById('chat-toggle').hidden = false;
-    document.getElementById('chat-panel').classList.add('open');
+    chatPanelTitle.textContent = 'Ask questions about ' + selectedFile.name;
+    chatPanel.classList.add('open');
   } catch (err) {
     alert(err.message || 'Something went wrong — try again.');
   } finally {
@@ -89,10 +91,15 @@ extractForm.addEventListener('submit', async e => {
 });
 
 document.getElementById('chat-toggle').addEventListener('click', () => {
-  document.getElementById('chat-panel').classList.toggle('open');
+  if (!currentDocId) {
+    alert('Upload a document first — then you can ask questions about it here.');
+    return;
+  }
+  chatPanel.classList.toggle('open');
 });
+
 document.getElementById('chat-close').addEventListener('click', () => {
-  document.getElementById('chat-panel').classList.remove('open');
+  chatPanel.classList.remove('open');
 });
 
 function appendMessage(role, text) {
