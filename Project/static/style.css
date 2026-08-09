@@ -480,6 +480,26 @@ h1, h2, .logo-text {
 
 .chat-panel-input .field-input { flex: 1; }
 
+.history-doc {
+  margin-bottom: 24px;
+}
+
+.history-doc-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.history-item {
+  align-items: flex-start;
+}
+
+.history-item-answer {
+  color: var(--ink-soft);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
 /* ============ MODAL ============ */
 .modal-close {
   background: none;

@@ -89,8 +89,8 @@ def ask():
 def history():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    entries = ChatHistory.query.filter_by(user_id=session["user_id"]).order_by(ChatHistory.created_at.desc()).all()
-    return render_template("history.html", entries=entries)
+    documents = Document.query.filter_by(user_id=session["user_id"]).order_by(Document.created_at.desc()).all()
+    return render_template("history.html", documents=documents)
 
 
 @app.route("/feedback", methods=["POST"])
