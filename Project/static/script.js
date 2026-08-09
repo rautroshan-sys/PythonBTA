@@ -8,6 +8,7 @@ const resultSection = document.getElementById('result-section');
 const resultBox = document.getElementById('result-box');
 const chatPanel = document.getElementById('chat-panel');
 const chatPanelTitle = document.getElementById('chat-panel-title');
+const questionInput = document.getElementById('question-input');
 
 let selectedMethod = null;
 let selectedFile = null;
@@ -80,7 +81,9 @@ extractForm.addEventListener('submit', async e => {
 
     document.getElementById('chat-log').innerHTML = '';
     appendMessage('assistant', data.text);
-    chatPanelTitle.textContent = 'Ask questions about ' + selectedFile.name;
+    chatPanelTitle.textContent = selectedFile.name;
+    questionInput.disabled = false;
+    questionInput.placeholder = 'Ask a question...';
     chatPanel.classList.add('open');
   } catch (err) {
     alert(err.message || 'Something went wrong — try again.');
@@ -91,10 +94,6 @@ extractForm.addEventListener('submit', async e => {
 });
 
 document.getElementById('chat-toggle').addEventListener('click', () => {
-  if (!currentDocId) {
-    alert('Upload a document first — then you can ask questions about it here.');
-    return;
-  }
   chatPanel.classList.toggle('open');
 });
 
@@ -114,12 +113,11 @@ function appendMessage(role, text) {
 }
 
 document.getElementById('ask-btn').addEventListener('click', async () => {
-  const input = document.getElementById('question-input');
-  const question = input.value.trim();
+  const question = questionInput.value.trim();
   if (!question || !currentDocId) return;
 
   appendMessage('user', question);
-  input.value = '';
+  questionInput.value = '';
   const thinking = appendMessage('assistant', 'Thinking...');
 
   try {
@@ -174,3 +172,11 @@ async function submitAuthForm(formId, endpoint) {
 
 submitAuthForm('login-form', '/login');
 submitAuthForm('signup-form', '/signup');
+
+const signoutBtn = document.getElementById('signout-btn');
+if (signoutBtn) {
+  signoutBtn.addEventListener('click', async () => {
+    await fetch('/logout', { method: 'POST', credentials: 'include' });
+    window.location.href = '/';
+  });
+}

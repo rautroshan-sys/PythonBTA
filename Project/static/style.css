@@ -5,9 +5,9 @@
   --line: #E4E4E1;
   --ink: #1C1C1A;
   --ink-soft: #6E6E68;
-  --accent: #4C5FD5;
-  --accent-hover: #3E4FBB;
-  --accent-soft: #EEF0FC;
+  --accent: #7C5CFC;
+  --accent-hover: #6A4AE8;
+  --accent-soft: #F1EEFE;
   --radius: 10px;
   --shadow: 0 1px 2px rgba(28,28,26,0.04), 0 8px 24px rgba(28,28,26,0.04);
   font-size: 16px;
@@ -83,7 +83,6 @@ h1, h2, .logo-text {
   justify-content: center;
   font-weight: 600;
   font-size: 14px;
-  cursor: pointer;
 }
 
 /* ============ BUTTONS ============ */
@@ -142,7 +141,7 @@ h1, h2, .logo-text {
   text-decoration: none;
 }
 
-/* ============ APP LAYOUT (main content + docked chat panel) ============ */
+/* ============ APP LAYOUT ============ */
 .app-layout {
   display: flex;
   min-height: calc(100vh - 65px);
@@ -165,7 +164,7 @@ h1, h2, .logo-text {
   color: var(--accent);
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0 0 12px;
 }
@@ -357,7 +356,7 @@ h1, h2, .logo-text {
   font-size: 12px;
 }
 
-/* ============ AUTH PAGES (login / signup) ============ */
+/* ============ AUTH PAGES ============ */
 .auth-section {
   min-height: 80vh;
   display: flex;
@@ -378,6 +377,13 @@ h1, h2, .logo-text {
 
 .auth-card h2 {
   text-align: center;
+  margin: 0 0 6px;
+}
+
+.auth-sub {
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 13px;
   margin: 0 0 24px;
 }
 
@@ -430,9 +436,22 @@ h1, h2, .logo-text {
   border-bottom: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
+  align-items: flex-start;
   white-space: nowrap;
+}
+
+.chat-panel-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+}
+
+#chat-panel-title {
+  font-weight: 600;
+  font-size: 15px;
 }
 
 #chat-log {
@@ -445,6 +464,12 @@ h1, h2, .logo-text {
   min-width: 340px;
 }
 
+.chat-empty {
+  color: var(--ink-soft);
+  font-size: 14px;
+  padding: 8px 4px;
+}
+
 .chat-panel-input {
   padding: 14px;
   border-top: 1px solid var(--line);
@@ -455,42 +480,14 @@ h1, h2, .logo-text {
 
 .chat-panel-input .field-input { flex: 1; }
 
-/* ============ MODAL (auth popup, if still used anywhere) ============ */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(28,28,26,0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 32px;
-  width: 100%;
-  max-width: 360px;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-}
-
+/* ============ MODAL ============ */
 .modal-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
   background: none;
   border: none;
   font-size: 20px;
   color: var(--ink-soft);
   cursor: pointer;
   line-height: 1;
-}
-
-.modal h2 {
-  font-size: 20px;
-  margin: 0 0 20px;
 }
 
 .field-label {
@@ -513,6 +510,11 @@ h1, h2, .logo-text {
 .field-input:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.field-input:disabled {
+  color: var(--ink-soft);
+  cursor: not-allowed;
 }
 
 .modal-switch {

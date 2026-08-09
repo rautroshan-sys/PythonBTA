@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Extractly{% endblock %}</title>
+  <title>{% block title %}Extractly — Extract text from documents and ask questions{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -18,6 +18,7 @@
       <div class="auth-controls">
         {% if logged_in %}
           <a href="/history" class="btn btn-ghost">My extractions</a>
+          <button class="btn btn-ghost" id="signout-btn">Sign out</button>
           <div class="account-pill"><span class="account-initial">{{ (current_user.name or current_user.email)[0] | upper }}</span></div>
         {% else %}
           <a href="/login" class="btn btn-ghost">Log in</a>
@@ -34,12 +35,17 @@
 
     <div class="chat-panel" id="chat-panel">
       <div class="chat-panel-header">
-        <span id="chat-panel-title">Upload a document to start</span>
+        <div>
+          <div class="chat-panel-eyebrow">Assistant</div>
+          <div id="chat-panel-title">Extractly chat</div>
+        </div>
         <button class="modal-close" id="chat-close">×</button>
       </div>
-      <div id="chat-log"></div>
+      <div id="chat-log">
+        <div class="chat-empty" id="chat-empty">Upload and extract a document first — then you can ask questions about it here.</div>
+      </div>
       <div class="chat-panel-input">
-        <input type="text" id="question-input" class="field-input" placeholder="Ask a question...">
+        <input type="text" id="question-input" class="field-input" placeholder="Upload a document first" disabled>
         <button class="btn btn-primary" id="ask-btn">Ask</button>
       </div>
     </div>

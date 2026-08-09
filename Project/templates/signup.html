@@ -1,20 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Register — Extractly{% endblock %}
+{% block title %}Create account — Extractly{% endblock %}
 {% block content %}
 <section class="auth-section">
   <div class="auth-card">
     <h2>Create account</h2>
+    <p class="auth-sub">Optional — it only saves your history.</p>
     <form id="signup-form">
       <label class="field-label" for="name">Name</label>
-      <input class="field-input" type="text" id="name" name="name" placeholder="Your name" required>
+      <input class="field-input" type="text" id="name" name="name" required>
 
       <label class="field-label" for="email">Email</label>
-      <input class="field-input" type="email" id="email" name="email" placeholder="you@example.com" required>
+      <input class="field-input" type="email" id="email" name="email" required>
 
       <label class="field-label" for="password">Password</label>
-      <input class="field-input" type="password" id="password" name="password" placeholder="••••••••" required>
+      <input class="field-input" type="password" id="password" name="password" required>
 
-      <button type="submit" class="btn btn-primary btn-wide">Register</button>
+      <button type="submit" class="btn btn-primary btn-wide">Create account</button>
     </form>
     <p class="modal-switch">
       <span>Already have an account?</span>
