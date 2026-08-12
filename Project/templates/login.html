@@ -1,23 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Log in — Extractly{% endblock %}
+
 {% block content %}
-<section class="auth-section">
+<main class="auth-main">
   <div class="auth-card">
-    <h2>Log in</h2>
-    <p class="auth-sub">Welcome back to Extractly.</p>
-    <form id="login-form">
-      <label class="field-label" for="email">Email</label>
-      <input class="field-input" type="email" id="email" name="email" required>
-
-      <label class="field-label" for="password">Password</label>
-      <input class="field-input" type="password" id="password" name="password" required>
-
-      <button type="submit" class="btn btn-primary btn-wide">Log in</button>
+    <p class="eyebrow">Welcome back</p>
+    <h1>Log in</h1>
+    <form method="post" class="stack">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required autocomplete="email" />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required autocomplete="current-password" />
+      <button type="submit" class="btn btn-accent full">Log in</button>
     </form>
-    <p class="modal-switch">
-      <span>No account?</span>
-      <a href="/signup" class="link-btn">Register</a>
-    </p>
+    <p class="muted small">No account? <a href="{{ url_for('register') }}">Register</a></p>
   </div>
-</section>
+</main>
 {% endblock %}

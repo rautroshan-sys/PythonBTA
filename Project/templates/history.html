@@ -1,29 +1,29 @@
 {% extends "base.html" %}
-{% block title %}History — Extractly{% endblock %}
+{% block title %}My extractions — Extractly{% endblock %}
+
 {% block content %}
-<section class="history-panel">
-  <div class="history-header">
-    <h2>Your past extractions</h2>
-  </div>
-  
-  <div class="history-list">
-    {% if entries %}
-      <ul class="history-items">
-        {% for entry in entries %}
-        <li class="history-card">
-          <div class="history-meta">
-            <span class="history-file">{{ entry.filename }}</span>
-            <span class="history-date">{{ entry.created_at }}</span>
-          </div>
-          <div class="history-text">
-            <pre>{{ entry.answer }}</pre>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
+<main id="history-page">
+  <p class="eyebrow">History</p>
+  <h1>My extractions</h1>
+  <p class="muted small">Every question you asked while signed in, most recent first.</p>
+
+  <div id="history-list">
+    {% if not entries %}
+      <p id="history-empty-state">
+        Nothing here yet. Extract a document and ask a question to start your history.
+      </p>
     {% else %}
-      <div class="history-empty">Nothing extracted yet.</div>
+      {% for entry in entries %}
+        <article class="history-item">
+          <div class="history-top">
+            <h2>{{ entry['question'] }}</h2>
+            <span class="muted small">{{ entry['created_at']|datetime }}</span>
+          </div>
+          <p class="muted small">{{ entry['document_name'] }}</p>
+          <p class="history-answer">{{ entry['answer'] }}</p>
+        </article>
+      {% endfor %}
     {% endif %}
   </div>
-</section>
+</main>
 {% endblock %}
