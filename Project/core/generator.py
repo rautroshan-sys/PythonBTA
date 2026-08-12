@@ -6,10 +6,15 @@ client = genai.Client(api_key=Config.GEMINI_API_KEY)
 MODEL = "gemini-3.6-flash"
 
 ANSWER_PROMPT = (
-    "Answer the question using only the context below. "
-    "If the context doesn't contain the answer, say you don't know.\n\n"
+    
+    "Answer the question using the information and logic present in the context below. "
+    "You may reason through or calculate based on what's in the context — for example, "
+    "tracing through code logic, doing arithmetic, or drawing conclusions that follow "
+    "directly from what's described. Only say you don't know if the answer genuinely "
+    "cannot be derived from the context even with reasoning.\n\n"
     "Context:\n{context}\n\nQuestion: {question}"
 )
+
 
 
 def generate_content_with_retry(model, contents, retries=3):
