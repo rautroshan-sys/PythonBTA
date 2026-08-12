@@ -23,8 +23,8 @@ Most learning code ends up buried in random folders, half-finished repls, or del
 - [X] **Flask, APIs & Web Requests**
 - [x] **Web Development** (Flask/FastAPI basics)
 - [ ] **CS50 AI with Python** — search, knowledge, uncertainty, optimization, machine learning, neural networks, natural language
-- [ ] **Working with LLMs** (prompting, API calls, embeddings)
-- [ ] **Building a RAG System** (the current end goal)
+- [x] **Working with LLMs** (prompting, API calls, embeddings)
+- [x] **Building a RAG System** (the current end goal)
 
 This list will keep expanding as the repo grows — check back for updates rather than expecting a fixed scope.
 
