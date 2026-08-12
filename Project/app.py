@@ -81,21 +81,28 @@ def logout():
 
 @app.route("/upload", methods=["POST"])
 def upload():
+    if "file" not in request.files:
+        return jsonify({"error": "no file provided"}), 400
+
     file = request.files["file"]
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     path = os.path.join(UPLOAD_DIR, secure_filename(file.filename))
-    file.save(path)
 
     try:
+        file.save(path)
         text = load_file(path)
+        if text.strip() == "UNREADABLE":
+            return jsonify({"error": "file unreadable"}), 400
+
+        doc = Document(user_id=session.get("user_id"), filename=file.filename)
+        db.session.add(doc)
+        db.session.commit()
+        store_chunks(doc.id, chunk_text(text))
+        return jsonify({"status": "ok", "document_id": doc.id, "text": text})
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
-
-    doc = Document(user_id=session.get("user_id"), filename=file.filename)
-    db.session.add(doc)
-    db.session.commit()
-    store_chunks(doc.id, chunk_text(text))
-    return jsonify({"status": "ok", "document_id": doc.id, "text": text})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/ask", methods=["POST"])
