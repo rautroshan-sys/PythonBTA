@@ -18,11 +18,17 @@ OCR_PROMPT = (
 
 
 def load_pdf(path):
-    return "\n".join(page.extract_text() or "" for page in PdfReader(path).pages)
+    text = "\n".join(page.extract_text() or "" for page in PdfReader(path).pages)
+    if not text.strip():
+        raise ValueError("No readable text found in this PDF — it may be a scanned image without text.")
+    return text
 
 
 def load_image(path):
-    return call_gemini_vision(Image.open(path), OCR_PROMPT)
+    text = call_gemini_vision(Image.open(path), OCR_PROMPT)
+    if text.strip() == "UNREADABLE":
+        raise ValueError("Picture is not clear enough to extract text. Please upload a clearer image.")
+    return text
 
 
 def load_text(path):
