@@ -1,3 +1,4 @@
+import fitz
 from pypdf import PdfReader
 from PIL import Image
 from core.generator import call_gemini_vision
@@ -17,11 +18,25 @@ OCR_PROMPT = (
 )
 
 
+def load_pdf_via_ocr(path):
+    doc = fitz.open(path)
+    pages = []
+    for page in doc:
+        pix = page.get_pixmap(dpi=200)
+        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+        text = call_gemini_vision(img, OCR_PROMPT)
+        if text.strip() and text.strip() != "UNREADABLE":
+            pages.append(text)
+    doc.close()
+    combined = "\n\n".join(pages)
+    if not combined.strip():
+        raise ValueError("No readable text found in this PDF — it may be a scanned image without text.")
+    return combined
+
+
 def load_pdf(path):
     text = "\n".join(page.extract_text() or "" for page in PdfReader(path).pages)
-    if not text.strip():
-        raise ValueError("No readable text found in this PDF — it may be a scanned image without text.")
-    return text
+    return text if text.strip() else load_pdf_via_ocr(path)
 
 
 def load_image(path):
